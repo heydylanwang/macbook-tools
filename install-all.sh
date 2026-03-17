@@ -1,0 +1,48 @@
+#!/bin/bash
+set -e
+
+echo "🚀 开始全量安装开发环境..."
+echo ""
+
+# 检查 Homebrew
+if ! command -v brew &> /dev/null; then
+    echo "📦 安装 Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# 备份现有配置
+BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d)"
+if [ -f ~/.zshrc ] || [ -f ~/.claude/CLAUDE.md ] || [ -f ~/.config/ghostty/config ]; then
+    echo "💾 备份现有配置到 $BACKUP_DIR"
+    mkdir -p "$BACKUP_DIR"
+    [ -f ~/.zshrc ] && cp ~/.zshrc "$BACKUP_DIR/"
+    [ -d ~/.claude ] && cp -r ~/.claude "$BACKUP_DIR/"
+    [ -d ~/.config/ghostty ] && cp -r ~/.config/ghostty "$BACKUP_DIR/"
+fi
+
+# 安装各组件
+echo ""
+echo "📦 [1/4] 安装 zsh 环境..."
+cd zsh && ./install.sh && cd ..
+
+echo ""
+echo "📦 [2/4] 安装 ghostty..."
+cd ghostty && ./install.sh && cd ..
+
+echo ""
+echo "📦 [3/4] 安装 Claude Code..."
+cd claude-code && ./install.sh && cd ..
+
+echo ""
+echo "📦 [4/4] 安装 claude-mem..."
+cd claude-mem && ./install.sh && cd ..
+
+echo ""
+echo "✅ 全量安装完成！"
+echo ""
+echo "📌 下一步："
+echo "1. 重启终端"
+echo "2. 运行 'claude auth login' 登录 Claude"
+echo "3. 运行 'p10k configure' 配置 zsh 主题"
+echo ""
+echo "💾 原配置已备份到: $BACKUP_DIR"
