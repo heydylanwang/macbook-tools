@@ -17,3 +17,8 @@ done
 
 echo ""
 echo "✅ 终端基础工具安装完成！"
+echo ""
+echo "📌 已安装工具："
+for tool in "${TOOLS[@]}"; do
+    echo "  ✓ $tool"
+done
