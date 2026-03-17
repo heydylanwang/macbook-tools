@@ -22,17 +22,8 @@ if [ -d ~/.claude/plugins/cache/thedotmack/claude-mem ]; then
     echo "✅ claude-mem 插件已安装"
 else
     echo "📦 安装 claude-mem 插件..."
-    echo ""
-    echo "⚠️  需要在新终端窗口执行以下命令："
-    echo "  1. claude plugin marketplace add thedotmack/claude-mem"
-    echo "  2. claude plugin install claude-mem"
-    echo ""
-    read -p "完成后按回车继续..."
-
-    if [ ! -d ~/.claude/plugins/cache/thedotmack/claude-mem ]; then
-        echo "❌ 未检测到 claude-mem 插件"
-        exit 1
-    fi
+    claude plugin marketplace add thedotmack/claude-mem
+    claude plugin install claude-mem
 fi
 
 # 创建 cm-worker 快捷脚本
