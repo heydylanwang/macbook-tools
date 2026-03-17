@@ -15,6 +15,7 @@ POWERLEVEL9K_MODE='nerdfont-complete'
 
 # Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
+source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # zsh-autosuggestions 颜色
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
@@ -40,6 +41,7 @@ POWERLEVEL9K_HOME_SUB_ICON=''
 POWERLEVEL9K_FOLDER_ICON=''
 POWERLEVEL9K_STATUS_VERBOSE=true
 POWERLEVEL9K_STATUS_CROSS=true
+#### POWERLEVEL9K END ####
 
 # PATH
 export PATH="$HOME/.local/bin:$PATH"
@@ -47,5 +49,52 @@ export PATH="$HOME/.local/bin:$PATH"
 # 加载环境变量
 [ -f ~/.env ] && source ~/.env
 
+# Ghostty 环境配置
+if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+  unset ANTHROPIC_BASE_URL
+  unset ANTHROPIC_AUTH_TOKEN
+  export TERM=xterm-256color
+  export COLORTERM=truecolor
+  export COLUMNS=$(tput cols 2>/dev/null || echo 120)
+fi
+
+# Claude Code 函数
+function claude() {
+  unset ANTHROPIC_API_KEY
+  $HOME/.local/bin/claude "$@"
+}
+
+# Claude-Mem 快捷别名
+alias cm-worker='$HOME/.local/bin/cm-worker'
+alias cm-health='cm-worker health'
+alias cm-status='cm-worker status'
+alias cm-stats='cm-worker stats'
+alias cm-queue='cm-worker queue'
+alias cm-viewer='cm-worker viewer'
+alias cm-start='cm-worker start'
+alias cm-stop='cm-worker stop'
+alias cm-restart='cm-worker restart'
+alias cm-logs='cm-worker logs'
+
+# Yazi shell wrapper
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
+
+# Zoxide（智能目录跳转）
+command -v zoxide &> /dev/null && eval "$(zoxide init zsh)"
+
 # 默认编辑器
 export EDITOR=vim
+
+# Kiro shell integration
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+
+# Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
