@@ -6,7 +6,7 @@ type: feedback
 
 查询前必须按顺序检查，不得跳级：
 
-1. 本地 `memory/` 文件 → 读 MEMORY.md 索引（~200 tokens）
+1. 本地 `memory/` 文件 → 读 MEMORY.md 索引
 2. 训练知识直接回答 → 通用知识无需查询
 3. claude-mem 历史搜索 → 本项目过去的决策记录
 4. 网络/agent 搜索 → 最后手段

@@ -1,5 +1,7 @@
 # Memory Index
 
+**详细记忆存储在 claude-mem MCP 插件中，通过 `search` 查询。**
+
 ## Feedback
 - [查询优先级规则](feedback_query_priority.md) — 本地→训练知识→历史→网络，避免高token消耗
 
