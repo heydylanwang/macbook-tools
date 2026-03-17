@@ -1,11 +1,14 @@
 #!/bin/bash
 set -e
 
+echo "🚀 开始全量安装开发环境..."
+echo "⏳ 正在初始化，请稍候..."
+echo ""
+
 # 获取脚本所在目录
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-echo "🚀 开始全量安装开发环境..."
 echo "📂 工作目录: $SCRIPT_DIR"
 echo ""
 
