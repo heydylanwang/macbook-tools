@@ -22,19 +22,23 @@ fi
 
 # 安装各组件
 echo ""
-echo "📦 [1/4] 安装 zsh 环境..."
+echo "📦 [1/5] 安装终端基础工具..."
+cd ghostty/tools && ./install-all.sh && cd ../..
+
+echo ""
+echo "📦 [2/5] 安装 zsh 环境..."
 cd zsh && ./install.sh && cd ..
 
 echo ""
-echo "📦 [2/4] 安装 ghostty..."
+echo "📦 [3/5] 安装 ghostty..."
 cd ghostty && ./install.sh && cd ..
 
 echo ""
-echo "📦 [3/4] 安装 Claude Code..."
+echo "📦 [4/5] 安装 Claude Code..."
 cd claude-code && ./install.sh && cd ..
 
 echo ""
-echo "📦 [4/4] 安装 claude-mem..."
+echo "📦 [5/5] 安装 claude-mem..."
 cd claude-mem && ./install.sh && cd ..
 
 echo ""

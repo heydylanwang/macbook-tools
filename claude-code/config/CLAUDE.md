@@ -14,6 +14,12 @@
 - 不读 .md 文档（README 等），除非用户要求。遵守 `.claudeignore`
 - 并行执行独立操作，减少 API 轮次。回复只展示改动部分
 
+## 终端工具规范
+
+- **Python**：使用 `python3` 和 `pip3`（不用 `python` 或 `pip`）
+- **路径**：用 `$HOME` 或 `~` 代替硬编码用户名
+- **环境变量**：优先使用工具的完整路径或已配置的环境变量
+
 ## 新项目必须包含
 
 1. **`.claudeignore`** — 排除 logs/cache/dist/build/node_modules/venv/docs/*.bak.*/.env*
