@@ -8,8 +8,7 @@ if command -v claude &> /dev/null; then
     echo "✅ Claude Code 已安装: $(claude --version 2>/dev/null || echo 'unknown')"
 else
     echo "📦 安装 Claude Code..."
-    brew tap anthropics/claude
-    brew install claude
+    curl -fsSL https://claude.ai/install.sh | bash
     echo "✓ 安装完成"
 fi
 
