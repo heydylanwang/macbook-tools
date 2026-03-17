@@ -21,7 +21,10 @@ if [ -f ~/.zshrc ] || [ -f ~/.claude/CLAUDE.md ] || [ -f ~/.config/ghostty/confi
     echo "💾 备份现有配置到 $BACKUP_DIR..."
     mkdir -p "$BACKUP_DIR"
     [ -f ~/.zshrc ] && cp ~/.zshrc "$BACKUP_DIR/"
-    [ -f ~/.claude/CLAUDE.md ] && mkdir -p "$BACKUP_DIR/.claude" && cp ~/.claude/CLAUDE.md "$BACKUP_DIR/.claude/"
+    if [ -f ~/.claude/CLAUDE.md ]; then
+        mkdir -p "$BACKUP_DIR/.claude"
+        cp ~/.claude/CLAUDE.md "$BACKUP_DIR/.claude/"
+    fi
     [ -d ~/.config/ghostty ] && cp -r ~/.config/ghostty "$BACKUP_DIR/"
     echo "✓ 备份完成"
 fi
