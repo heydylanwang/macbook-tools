@@ -1,7 +1,12 @@
 #!/bin/bash
 set -e
 
+# 获取脚本所在目录
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
 echo "🚀 开始全量安装开发环境..."
+echo "📂 工作目录: $SCRIPT_DIR"
 echo ""
 
 # 检查 Homebrew
@@ -10,14 +15,15 @@ if ! command -v brew &> /dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-# 备份现有配置
+# 备份现有配置（排除大文件）
 BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d)"
 if [ -f ~/.zshrc ] || [ -f ~/.claude/CLAUDE.md ] || [ -f ~/.config/ghostty/config ]; then
-    echo "💾 备份现有配置到 $BACKUP_DIR"
+    echo "💾 备份现有配置到 $BACKUP_DIR..."
     mkdir -p "$BACKUP_DIR"
     [ -f ~/.zshrc ] && cp ~/.zshrc "$BACKUP_DIR/"
-    [ -d ~/.claude ] && cp -r ~/.claude "$BACKUP_DIR/"
+    [ -f ~/.claude/CLAUDE.md ] && mkdir -p "$BACKUP_DIR/.claude" && cp ~/.claude/CLAUDE.md "$BACKUP_DIR/.claude/"
     [ -d ~/.config/ghostty ] && cp -r ~/.config/ghostty "$BACKUP_DIR/"
+    echo "✓ 备份完成"
 fi
 
 # 安装各组件
