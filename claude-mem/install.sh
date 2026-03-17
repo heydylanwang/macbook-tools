@@ -18,8 +18,11 @@ if ! command -v claude &> /dev/null; then
 fi
 
 # 安装 claude-mem 插件
+echo "📦 添加 claude-mem marketplace..."
+claude plugin marketplace add thedotmack/claude-mem
+
 echo "📦 安装 claude-mem 插件..."
-claude plugin install thedotmack/claude-mem
+claude plugin install claude-mem
 
 # 创建 cm-worker 快捷脚本
 echo "📝 创建快捷命令..."
