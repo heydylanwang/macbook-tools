@@ -1,5 +1,11 @@
 # Claude-Mem Pending Messages 问题分析与解决方案
 
+## ⚠️ 重要：自动恢复机制
+
+Claude-Mem **有内置的自动恢复机制**，我们的清理策略必须尊重这个机制。详见下文"为什么某些消息不能删除"。
+
+# Claude-Mem Pending Messages 问题分析与解决方案
+
 ## 问题描述
 
 ### 症状
@@ -40,22 +46,39 @@ pending → processing → (失败) → 永久堆积
 
 ## 解决方案架构
 
-### 三层防线
+### Claude-Mem 的自动恢复机制
+
+Claude-Mem 在 Worker 启动时自动执行 `resetStaleProcessingMessages()`：
+
+```javascript
+// 当 Worker 启动时（Claude 重启时）：
+resetStaleProcessingMessages()
+  → 所有 processing 消息 → 重置为 pending 状态
+  → 准备继续处理
+```
+
+这意味着：
+- ✅ `processing` 消息：Worker 重启时自动恢复
+- ✅ `pending` 消息：永远保留，等待处理机会
+- ❌ 我们不能假设 24h 无进展的消息已失效
+
+### 安全的清理策略
 
 #### 第 1 层：自动清理守护（auto-cleanup.sh）
 
-每天午夜自动运行，清理：
+每周日午夜自动运行，仅清理**已明确失败的消息**：
 
-| 类型 | 条件 | 清理阈值 |
-|------|------|---------|
-| **卡住的消息** | 状态 = pending/processing | 24h 无进展 + 重试 >= 3 次 |
-| **孤立消息** | 父会话已删除 | 任何时间 |
-| **失败消息** | 状态 = failed | 7 天未更新 |
+| 类型 | 条件 | 安全性 |
+|------|------|--------|
+| **孤立消息** | 父会话已删除 | ✅ 安全（会话不存在）|
+| **失败消息** | 状态 = failed，>30天 | ✅ 安全（已被 Claude-Mem 标记为失效） |
+| ~~**卡住的消息**~~ | ~~状态 = pending/processing~~ | ❌ **不清理**（可能会被 Worker 恢复） |
 
 **特点**：
 - ✅ 自动备份（防止误删）
 - ✅ 只保留最近 30 个清理备份
 - ✅ 详细日志记录
+- ✅ 尊重 Claude-Mem 的自动恢复机制
 
 #### 第 2 层：定期维护（maintenance.sh）
 
@@ -120,28 +143,28 @@ cat ~/.claude-mem/auto-cleanup.stderr.log
 
 ## 清理机制详解
 
-### 1. 卡住的消息清理
+### ❌ 为什么不清理 pending/processing 消息
 
-**定义**：消息满足以下所有条件：
-- 状态：`pending` 或 `processing`
-- 最后更新：> 24 小时前
-- 重试次数：>= 3 次（已尝试过但失败）
+当你在 Claude Code 中执行工作时，消息可能需要很长时间才能完成：
 
-**清理方式**：
-```sql
-DELETE FROM pending_messages
-WHERE (status = 'pending' OR status = 'processing')
-  AND (started_processing_at_epoch < [24h_ago])
-  AND retry_count >= 3
+1. **Network 延迟** - API 调用可能超时，但 Worker 会重试
+2. **Worker 重启** - 当 Claude 重启时，`processing` 消息会自动重置为 `pending`
+3. **会话挂起** - 某些消息可能故意等待，不是卡住
+
+Claude-Mem 源代码证据：
+```javascript
+// Worker 启动时自动执行
+resetStaleProcessingMessages(0)  // 0ms 意味着立即
+  // 效果：所有 processing 消息 → 变为 pending
+  // 这样可以继续处理
 ```
 
-**示例**：
-```
-消息 #123: 24 小时前进入 processing，已重试 5 次 → 删除
-消息 #456: 12 小时前进入 processing，重试 2 次 → 保留（还有机会）
-```
+**结论**：我们无法区分"失效"和"等待中"的消息，所以：
+- ❌ **不清理** `pending` 消息（可能还会被处理）
+- ❌ **不清理** `processing` 消息（Worker 重启时会恢复）
+- ✅ **只清理** `failed` 消息（已被 Claude-Mem 放弃）
 
-### 2. 孤立消息清理
+### 1. 孤立消息清理
 
 **定义**：消息的父会话已被删除
 
@@ -159,21 +182,26 @@ WHERE NOT EXISTS (
 会话 #S123 已删除，但其 pending_message #789 仍存在 → 删除
 ```
 
-### 3. 失败消息清理
+### 2. 失败消息清理
 
-**定义**：消息状态为 `failed` 且 7 天未更新
+**定义**：消息状态为 `failed` 且 30+ 天未更新
 
 **清理方式**：
 ```sql
 DELETE FROM pending_messages
 WHERE status = 'failed'
-  AND (failed_at_epoch < [7d_ago])
+  AND (failed_at_epoch < [30d_ago])
 ```
+
+**为什么是 30 天？**
+- `failed` 状态表示 Claude-Mem 已经放弃了这个消息
+- 保留 30 天是为了让你有足够时间查看失败原因
+- 30 天后可以安全删除（已不再需要）
 
 **示例**：
 ```
-消息 #999: 失败于 10 天前 → 删除
-消息 #888: 失败于 3 天前 → 保留（可能还要查看）
+消息 #999: 状态为 failed，35 天前 → 删除
+消息 #888: 状态为 failed，10 天前 → 保留（可能还要查看）
 ```
 
 ---
@@ -184,13 +212,16 @@ WHERE status = 'failed'
 
 位置：`~/.claude-mem/auto-cleanup.log`
 
+清理在**每周日午夜**自动运行：
+
 ```
-[2026-03-21 00:00:00] === 自动清理开始 ===
-[2026-03-21 00:00:01] 开始清理卡住的 pending_messages...
-[2026-03-21 00:00:02] ✅ 没有卡住的消息需要清理
-[2026-03-21 00:00:03] 清理孤立消息（对应会话已删除）...
-[2026-03-21 00:00:04] ✅ 没有孤立消息
-[2026-03-21 00:00:05] === 自动清理结束 ===
+[2026-03-22 00:00:00] === 自动清理开始 ===
+[2026-03-22 00:00:01] ⏭️  跳过：pending/processing 消息保留（Claude-Mem 自动恢复机制）
+[2026-03-22 00:00:02] 清理孤立消息（对应会话已删除）...
+[2026-03-22 00:00:03] ✅ 没有孤立消息
+[2026-03-22 00:00:04] 清理已失败的消息（>30天）...
+[2026-03-22 00:00:05] ✅ 没有过期失败消息
+[2026-03-22 00:00:06] === 自动清理结束 ===
 ```
 
 ### 备份文件

@@ -10,12 +10,14 @@
         <string>/Users/kryss/projects/macbook-tools/claude-mem/auto-cleanup.sh</string>
     </array>
 
-    <!-- 每天午夜 0:00 运行 -->
+    <!-- 每周日午夜 0:00 运行 -->
     <key>StartCalendarInterval</key>
     <dict>
         <key>Hour</key>
         <integer>0</integer>
         <key>Minute</key>
+        <integer>0</integer>
+        <key>Weekday</key>
         <integer>0</integer>
     </dict>
 

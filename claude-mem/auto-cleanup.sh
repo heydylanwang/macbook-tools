@@ -1,6 +1,6 @@
 #!/bin/bash
-# Claude-Mem 自动清理守护脚本
-# 清理卡住的 pending_messages 和孤立数据
+# Claude-Mem 自动清理守护脚本（每周一次）
+# 清理孤立消息和失败消息（>30天）
 
 DB_PATH="${HOME}/.claude-mem/claude-mem.db"
 LOG_FILE="${HOME}/.claude-mem/auto-cleanup.log"
@@ -9,49 +9,17 @@ log() {
     echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
 }
 
+# ⚠️  DISABLED: 不清理 pending/processing 消息
+#
+# Claude-Mem 有内置的自动恢复机制：
+# - Worker 启动时，resetStaleProcessingMessages() 自动将 processing 消息重置为 pending
+# - pending 消息随时可能被继续处理
+# - 我们无法确定一个消息是否真的失效，所以不能安全删除
+#
+# 详见 PENDING_MESSAGES.md 的"安全性"章节
+
 cleanup_stale_pending_messages() {
-    # 清理满足以下条件的消息：
-    # 1. 状态是 'pending' 或 'processing'
-    # 2. 最后更新超过 24 小时
-    # 3. 重试次数 > 3 次（表示已经尝试过但失败）
-
-    local CUTOFF_TIMESTAMP=$(($(date +%s) - 86400))  # 24 小时前
-
-    log "开始清理卡住的 pending_messages..."
-
-    # 统计待清理的消息
-    local STALE_COUNT=$(sqlite3 "$DB_PATH" <<SQL
-SELECT COUNT(*) FROM pending_messages
-WHERE (status = 'pending' OR status = 'processing')
-  AND (started_processing_at_epoch IS NOT NULL
-       AND started_processing_at_epoch < $CUTOFF_TIMESTAMP)
-  AND retry_count >= 3;
-SQL
-)
-
-    if [ "$STALE_COUNT" -gt 0 ]; then
-        log "⚠️  发现 $STALE_COUNT 条卡住的消息（>24小时未更新，重试≥3次）"
-
-        # 备份数据
-        cp "$DB_PATH" "$DB_PATH.backup_before_stale_cleanup_$(date +%Y%m%d_%H%M%S)"
-
-        # 清理操作
-        sqlite3 "$DB_PATH" <<SQL
-BEGIN TRANSACTION;
-
-DELETE FROM pending_messages
-WHERE (status = 'pending' OR status = 'processing')
-  AND (started_processing_at_epoch IS NOT NULL
-       AND started_processing_at_epoch < $CUTOFF_TIMESTAMP)
-  AND retry_count >= 3;
-
-COMMIT;
-SQL
-
-        log "✅ 清理完成，删除了 $STALE_COUNT 条卡住的消息"
-    else
-        log "✅ 没有卡住的消息需要清理"
-    fi
+    log "⏭️  跳过：pending/processing 消息保留（Claude-Mem 自动恢复机制）"
 }
 
 cleanup_orphaned_sessions() {
@@ -94,11 +62,12 @@ SQL
 }
 
 cleanup_failed_messages() {
-    # 清理已标记为失败且 7 天未更新的消息
+    # 清理已标记为失败的消息（30 天以上）
+    # 这些是 Claude-Mem 明确标记为失败的，可以安全删除
 
-    log "清理已失败的消息（>7天）..."
+    log "清理已失败的消息（>30天）..."
 
-    local CUTOFF_TIMESTAMP=$(($(date +%s) - 604800))  # 7 天前
+    local CUTOFF_TIMESTAMP=$(($(date +%s) - 2592000))  # 30 天前
 
     local FAILED_COUNT=$(sqlite3 "$DB_PATH" <<SQL
 SELECT COUNT(*) FROM pending_messages
@@ -109,7 +78,7 @@ SQL
 )
 
     if [ "$FAILED_COUNT" -gt 0 ]; then
-        log "⚠️  发现 $FAILED_COUNT 条已失败消息（>7天）"
+        log "⚠️  发现 $FAILED_COUNT 条已失败消息（>30天）"
 
         # 备份
         cp "$DB_PATH" "$DB_PATH.backup_before_failed_cleanup_$(date +%Y%m%d_%H%M%S)"
