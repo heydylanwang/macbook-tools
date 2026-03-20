@@ -38,6 +38,9 @@ EOF
 
 chmod +x ~/.local/bin/cm-worker
 
+# 设置脚本权限
+chmod +x "$(dirname "$0")"/{maintenance,monitor,run}.sh
+
 # 添加别名到 .zshrc
 if ! grep -q "alias cm-worker=" ~/.zshrc; then
     echo "" >> ~/.zshrc
@@ -53,6 +56,7 @@ if ! grep -q "alias cm-worker=" ~/.zshrc; then
     echo "alias cm-restart='cm-worker restart'" >> ~/.zshrc
     echo "alias cm-logs='cm-worker logs'" >> ~/.zshrc
     echo "alias cm-maint='~/projects/macbook-tools/claude-mem/maintenance.sh'" >> ~/.zshrc
+    echo "alias cm-run='~/projects/macbook-tools/claude-mem/run.sh'" >> ~/.zshrc
 fi
 
 # 启动服务

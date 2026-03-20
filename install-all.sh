@@ -53,6 +53,20 @@ echo ""
 echo "📦 [5/5] 安装 claude-mem..."
 cd claude-mem && ./install.sh && cd ..
 
+# 设置 claude-mem 自动监控
+echo ""
+echo "🔧 配置 claude-mem 自动监控..."
+if [ -d ~/Library/LaunchAgents ]; then
+    mkdir -p ~/Library/LaunchAgents 2>/dev/null || true
+    if cp claude-mem/com.kryss.claude-mem.monitor.plist ~/Library/LaunchAgents/ 2>/dev/null; then
+        if launchctl list | grep -q "com.kryss.claude-mem.monitor"; then
+            launchctl unload ~/Library/LaunchAgents/com.kryss.claude-mem.monitor.plist 2>/dev/null || true
+        fi
+        launchctl load ~/Library/LaunchAgents/com.kryss.claude-mem.monitor.plist 2>/dev/null || true
+        echo "✅ 自动监控已启用（每日自动检查数据库大小）"
+    fi
+fi
+
 echo ""
 echo "✅ 全量安装完成！"
 echo ""
