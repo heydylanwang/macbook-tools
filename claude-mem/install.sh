@@ -52,6 +52,7 @@ if ! grep -q "alias cm-worker=" ~/.zshrc; then
     echo "alias cm-stop='cm-worker stop'" >> ~/.zshrc
     echo "alias cm-restart='cm-worker restart'" >> ~/.zshrc
     echo "alias cm-logs='cm-worker logs'" >> ~/.zshrc
+    echo "alias cm-maint='~/projects/macbook-tools/claude-mem/maintenance.sh'" >> ~/.zshrc
 fi
 
 # 启动服务
