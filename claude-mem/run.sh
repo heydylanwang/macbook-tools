@@ -23,8 +23,10 @@ show_menu() {
     echo "  [3] 🔍 检查健康状态 (check)"
     echo "  [4] 🧹 清理过期数据 (cleanup)"
     echo "  [5] 🔄 完整维护流程 (full)"
-    echo "  [6] 📋 查看维护日志 (logs)"
-    echo "  [7] 🚀 启动自动监控 (monitor-setup)"
+    echo "  [6] 🧹 自动清理卡住消息 (auto-cleanup)"
+    echo "  [7] 📋 查看维护日志 (logs)"
+    echo "  [8] 🚀 启动自动监控 (monitor-setup)"
+    echo "  [9] ⚙️  启动自动清理守护 (cleanup-daemon)"
     echo ""
     echo "  [0] 退出"
     echo ""
@@ -37,8 +39,10 @@ run_command() {
         3) "$SCRIPT_DIR/maintenance.sh" check ;;
         4) "$SCRIPT_DIR/maintenance.sh" cleanup ;;
         5) "$SCRIPT_DIR/maintenance.sh" full ;;
-        6) view_logs ;;
-        7) setup_monitor ;;
+        6) "$SCRIPT_DIR/auto-cleanup.sh" ;;
+        7) view_logs ;;
+        8) setup_monitor ;;
+        9) setup_cleanup_daemon ;;
         0) echo "再见!"; exit 0 ;;
         *) echo "❌ 无效选择" ;;
     esac
@@ -80,6 +84,31 @@ setup_monitor() {
     launchctl list | grep claude-mem || echo "❌ 启动失败"
 }
 
+setup_cleanup_daemon() {
+    echo ""
+    echo "🚀 设置自动清理守护..."
+    echo ""
+
+    if [ ! -d ~/Library/LaunchAgents ]; then
+        mkdir -p ~/Library/LaunchAgents
+    fi
+
+    cp "$SCRIPT_DIR/com.kryss.claude-mem.auto-cleanup.plist" ~/Library/LaunchAgents/ 2>/dev/null
+
+    if launchctl list | grep -q "com.kryss.claude-mem.auto-cleanup"; then
+        echo "⚠️  清理守护已在运行，卸载旧版本..."
+        launchctl unload ~/Library/LaunchAgents/com.kryss.claude-mem.auto-cleanup.plist 2>/dev/null || true
+        sleep 1
+    fi
+
+    launchctl load ~/Library/LaunchAgents/com.kryss.claude-mem.auto-cleanup.plist
+    echo "✅ 自动清理守护已启动！"
+    echo "   每天午夜会自动清理卡住的消息"
+    echo ""
+    echo "验证状态:"
+    launchctl list | grep auto-cleanup || echo "❌ 启动失败"
+}
+
 main() {
     if [ ! -f "$DB_PATH" ]; then
         echo "❌ 错误: 找不到数据库文件 $DB_PATH"
@@ -103,14 +132,20 @@ main() {
             stats|backup|check|cleanup|full)
                 "$SCRIPT_DIR/maintenance.sh" "$1" "${@:2}"
                 ;;
+            auto-cleanup)
+                "$SCRIPT_DIR/auto-cleanup.sh"
+                ;;
             logs)
                 view_logs
                 ;;
             monitor-setup)
                 setup_monitor
                 ;;
+            cleanup-daemon)
+                setup_cleanup_daemon
+                ;;
             *)
-                echo "用法: $0 {stats|backup|check|cleanup|full|logs|monitor-setup}"
+                echo "用法: $0 {stats|backup|check|cleanup|full|auto-cleanup|logs|monitor-setup|cleanup-daemon}"
                 exit 1
                 ;;
         esac
