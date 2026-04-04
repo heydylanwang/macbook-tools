@@ -13,6 +13,9 @@ plugins=(git zsh-syntax-highlighting autojump zsh-autosuggestions)
 # Powerlevel10k mode
 POWERLEVEL9K_MODE='nerdfont-complete'
 
+# 将 zcompdump 重定向到缓存目录（避免污染 $HOME）
+export ZSH_COMPDUMP="$HOME/.cache/zsh/zcompdump"
+
 # Load Oh My Zsh
 source $ZSH/oh-my-zsh.sh
 source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -64,6 +67,10 @@ function claude() {
   $HOME/.local/bin/claude "$@"
 }
 
+function autoclaude() {
+  claude --model 'opus[1m]' --effort medium --dangerously-skip-permissions "$@"
+}
+
 # Claude-Mem 快捷别名
 alias cm-worker='$HOME/.local/bin/cm-worker'
 alias cm-health='cm-worker health'
@@ -98,3 +105,6 @@ export EDITOR=vim
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# 快速新建 Markdown 文件
+newmd() { local f="${1:-untitled}.md"; touch "$f" && open -a "Zed" "$f"; }

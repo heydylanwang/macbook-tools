@@ -22,4 +22,18 @@ if [ -d ~/.claude/projects ]; then
     done
 fi
 
+# 备份插件配置
+if [ -d ~/.claude/plugins ]; then
+    for plugin_dir in ~/.claude/plugins/*/; do
+        plugin_name=$(basename "$plugin_dir")
+        # 跳过 cache 目录（只备份用户配置）
+        [ "$plugin_name" = "cache" ] && continue
+        if [ -d "$plugin_dir" ]; then
+            echo "  ✓ 备份插件 $plugin_name"
+            mkdir -p "$BACKUP_DIR/plugins/$plugin_name"
+            cp -r "$plugin_dir"* "$BACKUP_DIR/plugins/$plugin_name/" 2>/dev/null || true
+        fi
+    done
+fi
+
 echo "✅ 备份完成: $BACKUP_DIR"

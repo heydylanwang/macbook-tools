@@ -1,0 +1,21 @@
+{
+  "language": "en",
+  "display": {
+    "showModel": true,
+    "showContextBar": true,
+    "showTools": true,
+    "showAgents": true,
+    "showTodos": true,
+    "showProject": true,
+    "showConfigCounts": true,
+    "showTokenBreakdown": true,
+    "showSpeed": true,
+    "showUsage": true,
+    "showDuration": false,
+    "showSessionName": true,
+    "showSessionTokens": true
+  },
+  "gitStatus": {
+    "enabled": true
+  }
+}

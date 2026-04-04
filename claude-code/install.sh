@@ -44,5 +44,19 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
         done
     fi
 
+    # 恢复插件配置
+    if [ -d config/plugins ]; then
+        echo "🔌 恢复插件配置..."
+        for plugin_dir in config/plugins/*; do
+            if [ -d "$plugin_dir" ]; then
+                plugin_name=$(basename "$plugin_dir")
+                target_dir=~/.claude/plugins/"$plugin_name"
+                mkdir -p "$target_dir"
+                cp -r "$plugin_dir"/* "$target_dir/"
+                echo "  ✓ 恢复插件 $plugin_name"
+            fi
+        done
+    fi
+
     echo "✅ 配置恢复完成"
 fi
