@@ -46,19 +46,23 @@ echo "📦 [3/6] 安装 ghostty..."
 cd ghostty && ./install.sh && cd ..
 
 echo ""
-echo "📦 [4/6] 安装 Rime 输入法..."
+echo "📦 [4/8] 安装 Zed 编辑器..."
+cd zed && ./install.sh && cd ..
+
+echo ""
+echo "📦 [5/8] 安装 Rime 输入法..."
 cd rime && ./install.sh && cd ..
 
 echo ""
-echo "📦 [5/7] 安装 Obsidian..."
+echo "📦 [6/8] 安装 Obsidian..."
 cd obsidian && ./install.sh && cd ..
 
 echo ""
-echo "📦 [6/7] 安装 Claude Code..."
+echo "📦 [7/8] 安装 Claude Code..."
 cd claude-code && ./install.sh && cd ..
 
 echo ""
-echo "📦 [7/7] 安装 claude-mem..."
+echo "📦 [8/8] 安装 claude-mem..."
 cd claude-mem && ./install.sh && cd ..
 
 # 设置 claude-mem 自动监控
