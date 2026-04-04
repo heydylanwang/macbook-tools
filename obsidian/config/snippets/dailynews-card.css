@@ -1,0 +1,246 @@
+/*
+ * Daily News 卡片式排版样式 - Material Design 3
+ * 用于 Obsidian markdown 中的 HTML 渲染
+ * 特色：现代化设计，高可读性，深度层级
+ */
+
+/* ─── 卡片容器 - Material Design 3 ────────────────────────────────────── */
+
+.dailynews-card {
+    display: flex;
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    line-height: 1.6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dailynews-card:hover,
+a.card-link:hover .dailynews-card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+/* ─── 标题：Headline Small (MD3) ────────────────────────────────────────── */
+
+.card-title {
+    display: flex;
+    font-size: 1.25em;
+    font-weight: 500;
+    color: #4D4D4D;
+    margin: 0;
+    line-height: 1.25;
+    letter-spacing: 0.5px;
+}
+
+.card-title a {
+    color: #4D4D4D;
+    text-decoration: none;
+    border-bottom: none;
+}
+
+.card-title a:hover {
+    color: #4D4D4D;
+    background-color: transparent;
+}
+
+/* 默认链接 */
+a.card-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* 鼠标悬停 */
+a.card-link:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* 点击访问后的颜色 */
+a.card-link:visited {
+    color: inherit;
+}
+
+/* ─── 已访问链接状态：文字变为灰色 ──────────────────────────────────── */
+
+a.card-link[data-visited="true"] .card-title {
+    color: #999999 !important;
+}
+
+a.card-link[data-visited="true"] .card-summary {
+    color: #999999 !important;
+}
+
+a.card-link[data-visited="true"] .card-meta {
+    color: #999999 !important;
+}
+
+/* 已访问链接的持久状态 */
+.dailynews-card[data-visited="true"] {
+    background-color: rgba(170, 170, 170, 0.1) !important;
+    border-left-color: #AAAAAA !important;
+    opacity: 0.8;
+}
+
+.dailynews-card[data-visited="true"] .card-title {
+    color: #999999 !important;
+}
+
+.dailynews-card[data-visited="true"] .card-summary {
+    color: #999999 !important;
+}
+
+.dailynews-card[data-visited="true"] .card-meta {
+    color: #999999 !important;
+}
+
+/* ─── 原标题（英文）────────────────────────────────────────────────────── */
+
+.card-original-title {
+    display: block;
+    font-size: 0.9em;
+    color: #666;
+    font-style: italic;
+    margin-bottom: 0.8rem;
+    padding-left: 1rem;
+    border-left: 2px solid #bdc3c7;
+}
+
+/* ─── 摘要：Body (MD3) ────────────────────────────────────────────── */
+
+.card-summary {
+    display: block;
+    font-size: 0.95em;
+    color: #999999;
+    margin: 0;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    /* 最多10行限制 */
+    max-height: 15em;  /* 10行 × 1.5行高 */
+    overflow: hidden;
+}
+
+.card-summary p {
+    margin: 0;
+}
+
+.card-summary br {
+    display: block;
+    content: "";
+    margin: 0;
+}
+
+.card-summary p + p {
+    margin-top: 0;
+}
+
+/* 超出10行时显示省略号 */
+.card-summary::after {
+    content: '';
+}
+
+.card-summary[data-lines="10"]::after {
+    content: ' ...';
+}
+
+/* ─── 元信息：Label Small (MD3) ─────────────────────────────────────────── */
+
+.card-meta {
+    display: block;
+    font-size: 0.6875rem;
+    color: #999999;
+    margin-top: 0.5rem;
+    padding-top: 0;
+    border-top: none;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.card-meta-item {
+    display: inline-block;
+    margin-right: 1rem;
+    white-space: nowrap;
+}
+
+/* ─── 暗色主题支持 ─────────────────────────────────────────────────────── */
+
+@media (prefers-color-scheme: dark) {
+    .dailynews-card {
+        background-color: rgba(52, 152, 219, 0.1);
+        border-left-color: #3498db;
+    }
+
+    .dailynews-card:hover {
+        background-color: rgba(52, 152, 219, 0.15);
+    }
+
+    .card-title {
+        color: #ecf0f1;
+    }
+
+    .card-title a {
+        color: #3498db;
+    }
+
+    .card-title a:hover {
+        color: #5dade2;
+    }
+
+    .card-original-title {
+        color: #bdc3c7;
+    }
+
+    .card-summary {
+        color: #d0d0d0;
+    }
+
+    .card-meta {
+        color: #95a5a6;
+        border-top-color: #34495e;
+    }
+}
+
+/* ─── 响应式设计 ───────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .dailynews-card {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+
+    .card-title {
+        font-size: 1.05em;
+        margin-bottom: 0.6rem;
+    }
+
+    .card-summary {
+        font-size: 0.9em;
+    }
+
+    .card-meta-item {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 0.3rem;
+    }
+}
+
+/* ─── Obsidian 特殊调整 ────────────────────────────────────────────────── */
+
+.markdown-rendered .dailynews-card {
+    position: relative;
+}
+
+/* 确保链接在 Obsidian 中的可点击性 */
+.markdown-rendered .card-title a {
+    cursor: pointer;
+}

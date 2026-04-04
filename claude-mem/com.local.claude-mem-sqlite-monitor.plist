@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.local.claude-mem-sqlite-monitor</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__HOME__/projects/macbook-tools/claude-mem/claude-mem-sqlite-monitor.sh</string>
+    </array>
+
+    <key>StartInterval</key>
+    <integer>86400</integer>
+
+    <!-- 每天 9 点运行（可选，用 StartCalendarInterval 替代 StartInterval） -->
+    <!--
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>9</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+    -->
+
+    <key>StandardOutPath</key>
+    <string>__HOME__/.claude-mem/sqlite-monitor.stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>__HOME__/.claude-mem/sqlite-monitor.stderr.log</string>
+
+    <key>KeepAlive</key>
+    <false/>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

@@ -68,15 +68,15 @@ setup_monitor() {
         mkdir -p ~/Library/LaunchAgents
     fi
 
-    cp "$SCRIPT_DIR/com.kryss.claude-mem.monitor.plist" ~/Library/LaunchAgents/ 2>/dev/null
+    sed "s|__HOME__|$HOME|g" "$SCRIPT_DIR/com.local.claude-mem-sqlite-monitor.plist" > ~/Library/LaunchAgents/com.local.claude-mem-sqlite-monitor.plist 2>/dev/null
 
-    if launchctl list | grep -q "com.kryss.claude-mem.monitor"; then
+    if launchctl list | grep -q "com.local.claude-mem-sqlite-monitor"; then
         echo "⚠️  监控已在运行，卸载旧版本..."
-        launchctl unload ~/Library/LaunchAgents/com.kryss.claude-mem.monitor.plist 2>/dev/null || true
+        launchctl unload ~/Library/LaunchAgents/com.local.claude-mem-sqlite-monitor.plist 2>/dev/null || true
         sleep 1
     fi
 
-    launchctl load ~/Library/LaunchAgents/com.kryss.claude-mem.monitor.plist
+    launchctl load ~/Library/LaunchAgents/com.local.claude-mem-sqlite-monitor.plist
     echo "✅ 自动监控已启动！"
     echo "   每天会自动检查数据库大小和发送告警"
     echo ""
@@ -93,15 +93,15 @@ setup_cleanup_daemon() {
         mkdir -p ~/Library/LaunchAgents
     fi
 
-    cp "$SCRIPT_DIR/com.kryss.claude-mem.auto-cleanup.plist" ~/Library/LaunchAgents/ 2>/dev/null
+    sed "s|__HOME__|$HOME|g" "$SCRIPT_DIR/com.local.claude-mem.auto-cleanup.plist" > ~/Library/LaunchAgents/com.local.claude-mem.auto-cleanup.plist 2>/dev/null
 
-    if launchctl list | grep -q "com.kryss.claude-mem.auto-cleanup"; then
+    if launchctl list | grep -q "com.local.claude-mem.auto-cleanup"; then
         echo "⚠️  清理守护已在运行，卸载旧版本..."
-        launchctl unload ~/Library/LaunchAgents/com.kryss.claude-mem.auto-cleanup.plist 2>/dev/null || true
+        launchctl unload ~/Library/LaunchAgents/com.local.claude-mem.auto-cleanup.plist 2>/dev/null || true
         sleep 1
     fi
 
-    launchctl load ~/Library/LaunchAgents/com.kryss.claude-mem.auto-cleanup.plist
+    launchctl load ~/Library/LaunchAgents/com.local.claude-mem.auto-cleanup.plist
     echo "✅ 自动清理守护已启动！"
     echo "   每天午夜会自动清理卡住的消息"
     echo ""

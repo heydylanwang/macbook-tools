@@ -27,7 +27,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     # 复制全局配置
     mkdir -p ~/.claude
     cp config/CLAUDE.md ~/.claude/CLAUDE.md
-    [ -f config/settings.json ] && cp config/settings.json ~/.claude/settings.json
+    [ -f config/settings.json ] && sed "s|__HOME__|$HOME|g" config/settings.json > ~/.claude/settings.json
     echo "  ✓ 全局配置已覆盖"
 
     # 恢复 memory 目录

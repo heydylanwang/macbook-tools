@@ -39,7 +39,7 @@ EOF
 chmod +x ~/.local/bin/cm-worker
 
 # 设置脚本权限
-chmod +x "$(dirname "$0")"/{maintenance,monitor,run}.sh
+chmod +x "$(dirname "$0")"/{maintenance,claude-mem-sqlite-monitor,run}.sh
 
 # 添加别名到 .zshrc
 if ! grep -q "alias cm-worker=" ~/.zshrc; then

@@ -34,23 +34,31 @@ fi
 
 # 安装各组件
 echo ""
-echo "📦 [1/5] 安装终端基础工具..."
+echo "📦 [1/6] 安装终端基础工具..."
 cd ghostty/tools && ./install-all.sh && cd ../..
 
 echo ""
-echo "📦 [2/5] 安装 zsh 环境..."
+echo "📦 [2/6] 安装 zsh 环境..."
 cd zsh && ./install.sh && cd ..
 
 echo ""
-echo "📦 [3/5] 安装 ghostty..."
+echo "📦 [3/6] 安装 ghostty..."
 cd ghostty && ./install.sh && cd ..
 
 echo ""
-echo "📦 [4/5] 安装 Claude Code..."
+echo "📦 [4/6] 安装 Rime 输入法..."
+cd rime && ./install.sh && cd ..
+
+echo ""
+echo "📦 [5/7] 安装 Obsidian..."
+cd obsidian && ./install.sh && cd ..
+
+echo ""
+echo "📦 [6/7] 安装 Claude Code..."
 cd claude-code && ./install.sh && cd ..
 
 echo ""
-echo "📦 [5/5] 安装 claude-mem..."
+echo "📦 [7/7] 安装 claude-mem..."
 cd claude-mem && ./install.sh && cd ..
 
 # 设置 claude-mem 自动监控
@@ -58,11 +66,11 @@ echo ""
 echo "🔧 配置 claude-mem 自动监控..."
 if [ -d ~/Library/LaunchAgents ]; then
     mkdir -p ~/Library/LaunchAgents 2>/dev/null || true
-    if cp claude-mem/com.kryss.claude-mem.monitor.plist ~/Library/LaunchAgents/ 2>/dev/null; then
-        if launchctl list | grep -q "com.kryss.claude-mem.monitor"; then
-            launchctl unload ~/Library/LaunchAgents/com.kryss.claude-mem.monitor.plist 2>/dev/null || true
+    if sed "s|__HOME__|$HOME|g" claude-mem/com.local.claude-mem-sqlite-monitor.plist > ~/Library/LaunchAgents/com.local.claude-mem-sqlite-monitor.plist 2>/dev/null; then
+        if launchctl list | grep -q "com.local.claude-mem-sqlite-monitor"; then
+            launchctl unload ~/Library/LaunchAgents/com.local.claude-mem-sqlite-monitor.plist 2>/dev/null || true
         fi
-        launchctl load ~/Library/LaunchAgents/com.kryss.claude-mem.monitor.plist 2>/dev/null || true
+        launchctl load ~/Library/LaunchAgents/com.local.claude-mem-sqlite-monitor.plist 2>/dev/null || true
         echo "✅ 自动监控已启用（每日自动检查数据库大小）"
     fi
 fi
