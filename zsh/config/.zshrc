@@ -108,3 +108,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # 快速新建 Markdown 文件
 newmd() { local f="${1:-untitled}.md"; touch "$f" && open -a "Zed" "$f"; }
+
+# Vault（加密磁盘映像）
+alias vault="open /private/vault/dylan-vault.sparsebundle"
