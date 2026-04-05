@@ -12,4 +12,11 @@ else
     echo "  ⚠️ ~/.claude/CLAUDE.md 不存在"
 fi
 
+if [ -f ~/.claude/settings.json ]; then
+    cp ~/.claude/settings.json "$SCRIPT_DIR/settings.json.default"
+    echo "  ✓ settings.json 已同步到 settings.json.default"
+else
+    echo "  ⚠️ ~/.claude/settings.json 不存在"
+fi
+
 echo "✅ 备份完成"

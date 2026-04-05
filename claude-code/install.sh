@@ -20,6 +20,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     mkdir -p ~/.claude
     cp CLAUDE.md.default ~/.claude/CLAUDE.md
     echo "  ✓ CLAUDE.md 已覆盖"
+    cp settings.json.default ~/.claude/settings.json
+    echo "  ✓ settings.json 已覆盖（含 MCP/插件配置）"
 fi
 
 echo ""
