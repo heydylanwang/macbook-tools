@@ -1,39 +1,15 @@
 #!/bin/bash
-# 备份当前机器的 Claude Code 配置
+# 备份当前机器的 Claude Code CLAUDE.md 配置
 
-BACKUP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
-mkdir -p "$BACKUP_DIR/memory"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "📦 备份 Claude Code 配置..."
 
-# 备份全局配置
-[ -f ~/.claude/CLAUDE.md ] && cp ~/.claude/CLAUDE.md "$BACKUP_DIR/"
-[ -f ~/.claude/settings.json ] && cp ~/.claude/settings.json "$BACKUP_DIR/"
-
-# 备份 memory 目录（所有项目）
-if [ -d ~/.claude/projects ]; then
-    for project_dir in ~/.claude/projects/*/memory; do
-        if [ -d "$project_dir" ]; then
-            project_name=$(basename $(dirname "$project_dir"))
-            echo "  ✓ 备份 $project_name/memory"
-            mkdir -p "$BACKUP_DIR/memory/$project_name"
-            cp -r "$project_dir"/* "$BACKUP_DIR/memory/$project_name/" 2>/dev/null || true
-        fi
-    done
+if [ -f ~/.claude/CLAUDE.md ]; then
+    cp ~/.claude/CLAUDE.md "$SCRIPT_DIR/CLAUDE.md.default"
+    echo "  ✓ CLAUDE.md 已同步到 CLAUDE.md.default"
+else
+    echo "  ⚠️ ~/.claude/CLAUDE.md 不存在"
 fi
 
-# 备份插件配置
-if [ -d ~/.claude/plugins ]; then
-    for plugin_dir in ~/.claude/plugins/*/; do
-        plugin_name=$(basename "$plugin_dir")
-        # 跳过 cache 目录（只备份用户配置）
-        [ "$plugin_name" = "cache" ] && continue
-        if [ -d "$plugin_dir" ]; then
-            echo "  ✓ 备份插件 $plugin_name"
-            mkdir -p "$BACKUP_DIR/plugins/$plugin_name"
-            cp -r "$plugin_dir"* "$BACKUP_DIR/plugins/$plugin_name/" 2>/dev/null || true
-        fi
-    done
-fi
-
-echo "✅ 备份完成: $BACKUP_DIR"
+echo "✅ 备份完成"
