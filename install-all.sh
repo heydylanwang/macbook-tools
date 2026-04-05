@@ -34,15 +34,15 @@ fi
 
 # 安装各组件
 echo ""
-echo "📦 [1/6] 安装终端基础工具..."
+echo "📦 [1/8] 安装终端基础工具..."
 cd ghostty/tools && ./install-all.sh && cd ../..
 
 echo ""
-echo "📦 [2/6] 安装 zsh 环境..."
+echo "📦 [2/8] 安装 zsh 环境..."
 cd zsh && ./install.sh && cd ..
 
 echo ""
-echo "📦 [3/6] 安装 ghostty..."
+echo "📦 [3/8] 安装 ghostty..."
 cd ghostty && ./install.sh && cd ..
 
 echo ""
