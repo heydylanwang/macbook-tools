@@ -13,5 +13,18 @@ else
 fi
 
 echo ""
+read -p "是否使用本机备份配置覆盖 CLAUDE.md？(y/n): " -n 1 -r
+echo ""
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if [ -f ~/.claude/CLAUDE.md ]; then
+        cp ~/.claude/CLAUDE.md ~/.claude/CLAUDE.md.backup.$(date +%Y%m%d_%H%M%S)
+    fi
+    mkdir -p ~/.claude
+    cp CLAUDE.md.default ~/.claude/CLAUDE.md
+    echo "  ✓ CLAUDE.md 已覆盖"
+fi
+
+echo ""
 echo "✅ Claude Code 安装完成！"
 echo "📌 运行 'claude auth login' 登录后即可使用"
