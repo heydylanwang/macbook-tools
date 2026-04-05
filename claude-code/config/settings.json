@@ -49,9 +49,9 @@
       }
     }
   },
+  "model": "opus[1m]",
+  "effortLevel": "medium",
   "skipDangerousModePermissionPrompt": true,
   "defaultMode": "acceptEdits",
-  "preferredLanguage": "zh-CN",
-  "model": "sonnet",
-  "effortLevel": "medium"
+  "preferredLanguage": "zh-CN"
 }
