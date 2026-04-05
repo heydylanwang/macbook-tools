@@ -30,35 +30,39 @@ fi
 
 # 安装各组件
 echo ""
-echo "📦 [1/8] 安装终端基础工具..."
+echo "📦 [1/9] 安装终端基础工具..."
 cd ghostty/tools && ./install-all.sh && cd ../..
 
 echo ""
-echo "📦 [2/8] 安装 zsh 环境..."
+echo "📦 [2/9] 安装字体..."
+cd fonts && ./install.sh && cd ..
+
+echo ""
+echo "📦 [3/9] 安装 zsh 环境..."
 cd zsh && ./install.sh && cd ..
 
 echo ""
-echo "📦 [3/8] 安装 ghostty..."
+echo "📦 [4/9] 安装 ghostty..."
 cd ghostty && ./install.sh && cd ..
 
 echo ""
-echo "📦 [4/8] 安装 Zed 编辑器..."
+echo "📦 [5/9] 安装 Zed 编辑器..."
 cd zed && ./install.sh && cd ..
 
 echo ""
-echo "📦 [5/8] 安装 Rime 输入法..."
+echo "📦 [6/9] 安装 Rime 输入法..."
 cd rime && ./install.sh && cd ..
 
 echo ""
-echo "📦 [6/8] 安装 Obsidian..."
+echo "📦 [7/9] 安装 Obsidian..."
 cd obsidian && ./install.sh && cd ..
 
 echo ""
-echo "📦 [7/8] 安装 Claude Code..."
+echo "📦 [8/9] 安装 Claude Code..."
 cd claude-code && ./install.sh && cd ..
 
 echo ""
-echo "📦 [8/8] 安装 claude-mem..."
+echo "📦 [9/9] 安装 claude-mem..."
 cd claude-mem && ./install.sh && cd ..
 
 # 设置 claude-mem 自动监控
