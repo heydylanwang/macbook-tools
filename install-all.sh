@@ -20,14 +20,10 @@ fi
 
 # 备份现有配置（排除大文件）
 BACKUP_DIR="$HOME/.config-backup-$(date +%Y%m%d)"
-if [ -f ~/.zshrc ] || [ -f ~/.claude/CLAUDE.md ] || [ -f ~/.config/ghostty/config ]; then
+if [ -f ~/.zshrc ] || [ -f ~/.config/ghostty/config ]; then
     echo "💾 备份现有配置到 $BACKUP_DIR..."
     mkdir -p "$BACKUP_DIR"
     [ -f ~/.zshrc ] && cp ~/.zshrc "$BACKUP_DIR/"
-    if [ -f ~/.claude/CLAUDE.md ]; then
-        mkdir -p "$BACKUP_DIR/.claude"
-        cp ~/.claude/CLAUDE.md "$BACKUP_DIR/.claude/"
-    fi
     [ -d ~/.config/ghostty ] && cp -r ~/.config/ghostty "$BACKUP_DIR/"
     echo "✓ 备份完成"
 fi
