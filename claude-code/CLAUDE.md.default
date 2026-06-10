@@ -13,10 +13,6 @@
 - Use $HOME or ~ instead of hardcoded paths
 - Prefer full tool paths or configured environment variables
 
-# Memory:
-- Do not use file-based memory (MEMORY.md, memory/*.md)
-- Use claude-mem for persistence
-
 # COMMENT RULES (STRICT)
 - Public/internal: use KDoc /** */
 - Private: minimal comment only if needed

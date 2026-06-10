@@ -71,18 +71,6 @@ function autoclaude() {
   claude --model 'opus[1m]' --effort medium --dangerously-skip-permissions "$@"
 }
 
-# Claude-Mem 快捷别名
-alias cm-worker='$HOME/.local/bin/cm-worker'
-alias cm-health='cm-worker health'
-alias cm-status='cm-worker status'
-alias cm-stats='cm-worker stats'
-alias cm-queue='cm-worker queue'
-alias cm-viewer='cm-worker viewer'
-alias cm-start='cm-worker start'
-alias cm-stop='cm-worker stop'
-alias cm-restart='cm-worker restart'
-alias cm-logs='cm-worker logs'
-
 # Yazi shell wrapper
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd

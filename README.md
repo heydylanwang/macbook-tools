@@ -7,7 +7,6 @@
 | 工具 | 说明 | 配置目录 |
 |------|------|----------|
 | **Claude Code** | Anthropic 官方 CLI，AI 编程助手 | [claude-code/](claude-code/) |
-| **claude-mem** | Claude 持久化记忆系统（MCP 插件） | [claude-mem/](claude-mem/) |
 | **zsh** | Shell 环境（含主题、插件、配色） | [zsh/](zsh/) |
 | **ghostty** | 现代终端模拟器（含 yazi、lazygit） | [ghostty/](ghostty/) |
 
@@ -23,9 +22,6 @@ cd 新机器配置
 ```bash
 # 安装 Claude Code
 cd claude-code && ./install.sh
-
-# 安装 claude-mem
-cd claude-mem && ./install.sh
 
 # 安装 zsh 环境
 cd zsh && ./install.sh

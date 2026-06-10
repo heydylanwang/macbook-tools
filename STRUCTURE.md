@@ -15,10 +15,6 @@
 │       └── memory/
 │           └── MEMORY.md       # 记忆模板
 │
-├── claude-mem/                 # claude-mem 配置
-│   ├── README.md               # 使用文档
-│   └── install.sh              # 安装脚本
-│
 ├── zsh/                        # zsh 配置
 │   ├── README.md               # 使用文档
 │   ├── install.sh              # 安装脚本
