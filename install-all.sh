@@ -28,46 +28,66 @@ if [ -f ~/.zshrc ] || [ -f ~/.config/ghostty/config ]; then
     echo "✓ 备份完成"
 fi
 
+# 从 Brewfile 安装所有 brew 包
+echo ""
+echo "📦 [0/10] 从 Brewfile 安装所有包..."
+if [ -f "$SCRIPT_DIR/Brewfile" ]; then
+    brew bundle install --file="$SCRIPT_DIR/Brewfile"
+    echo "✓ Brewfile 安装完成"
+else
+    echo "⚠️  未找到 Brewfile，跳过"
+fi
+
 # 安装各组件
 echo ""
-echo "📦 [1/8] 安装终端基础工具..."
+echo "📦 [1/10] 安装终端基础工具..."
 cd ghostty/tools && ./install-all.sh && cd ../..
 
 echo ""
-echo "📦 [2/8] 安装字体..."
+echo "📦 [2/10] 安装字体..."
 cd fonts && ./install.sh && cd ..
 
 echo ""
-echo "📦 [3/8] 安装 zsh 环境..."
+echo "📦 [3/10] 安装 zsh 环境..."
 cd zsh && ./install.sh && cd ..
 
 echo ""
-echo "📦 [4/8] 安装 ghostty..."
+echo "📦 [4/10] 安装 ghostty..."
 cd ghostty && ./install.sh && cd ..
 
 echo ""
-echo "📦 [5/8] 安装 Zed 编辑器..."
+echo "📦 [5/10] 安装 Zed 编辑器..."
 cd zed && ./install.sh && cd ..
 
 echo ""
-echo "📦 [6/8] 安装 Rime 输入法..."
+echo "📦 [6/10] 安装 Rime 输入法..."
 cd rime && ./install.sh && cd ..
 
 echo ""
-echo "📦 [7/8] 安装 Obsidian..."
+echo "📦 [7/10] 安装 Obsidian..."
 cd obsidian && ./install.sh && cd ..
 
 echo ""
-echo "📦 [8/8] 安装 Claude Code..."
+echo "📦 [8/10] 安装 Claude Code..."
 cd claude-code && ./install.sh && cd ..
+
+echo ""
+echo "📦 [9/10] 配置 Git..."
+cd git && ./install.sh && cd ..
+
+echo ""
+echo "📦 [10/10] 配置 macOS 系统偏好..."
+cd macos && ./install.sh && cd ..
 
 echo ""
 echo "✅ 全量安装完成！"
 echo ""
 echo "📌 下一步："
 echo "1. 重启终端"
-echo "2. 运行 'claude auth login' 登录 Claude"
-echo "3. 运行 'p10k configure' 配置 zsh 主题"
+echo "2. 挂载 vault 恢复 SSH 密钥: vault"
+echo "3. 设置 Git 用户: git config --global user.name/email"
+echo "4. 运行 'claude auth login' 登录 Claude"
+echo "5. 运行 'p10k configure' 配置 zsh 主题"
 echo ""
 echo "💾 原配置已备份到: $BACKUP_DIR"
 echo ""
