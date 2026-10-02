@@ -1,13 +1,33 @@
 {
+  "env": {
+    "AGENT_MEMORY_ROOT": "~/agent-memory"
+  },
   "permissions": {
     "allow": [
       "Read(~/.claude)",
       "Read(~/.claude/**)",
-      "Write(~/.claude/**)",
+      "Edit(~/.claude/**)",
       "Delete(~/.claude/**)",
-      "Glob(~/.claude/**)",
       "Grep(~/.claude/**)",
+      "Read(~/AndroidStudioProjects)",
+      "Read(~/AndroidStudioProjects/**)",
+      "Edit(~/AndroidStudioProjects/**)",
+      "Delete(~/AndroidStudioProjects/**)",
+      "Grep(~/AndroidStudioProjects/**)",
+      "Read(~/GithubProjects)",
+      "Read(~/GithubProjects/**)",
+      "Edit(~/GithubProjects/**)",
+      "Delete(~/GithubProjects/**)",
+      "Grep(~/GithubProjects/**)",
+      "Read(~/agent-memory)",
+      "Read(~/agent-memory/**)",
+      "Edit(~/agent-memory/**)",
+      "Delete(~/agent-memory/**)",
+      "Grep(~/agent-memory/**)",
       "Bash(git:*)",
+      "Bash(./gradlew:*)",
+      "Bash(mkdir:*)",
+      "Bash(ls:*)",
       "Bash(yazi:*)",
       "WebSearch",
       "WebFetch(domain:github.com)"
@@ -17,27 +37,106 @@
       "Read(./.DS_Store)"
     ],
     "additionalDirectories": [
-      "/Users/dylan/.claude",
-      "/Users/dylan/projects/macbook-tools"
+      "__HOME__/.claude",
+      "__HOME__/projects/macbook-tools",
+      "__HOME__/GithubProjects/AtlasSportSDK",
+      "__HOME__/AndroidStudioProjects/AndroidArchBlueprint",
+      "__HOME__/agent-memory"
+    ]
+  },
+  "model": "fable[1m]",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.local/bin/claude-plugin-autoupdate"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/inject-shared-rules.sh"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/progress-gate.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/progress-archive.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/delivery-lang-gate.sh"
+          },
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/merge-sweep-gate.sh"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
     "type": "command",
-    "command": "bash -c 'plugin_dir=$(ls -d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | awk -F/ '\"'\"'{ print $(NF-1) \"\\t\" $(0) }'\"'\"' | sort -t. -k1,1n -k2,2n -k3,3n -k4,4n | tail -1 | cut -f2-); exec \"/Users/dylan/.bun/bin/bun\" --env-file /dev/null \"${plugin_dir}src/index.ts\"'"
+    "command": "bash -c 'plugin_dir=$(ls -d \"$HOME\"/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | sort -V | tail -1); exec \"__HOME__/.bun/bin/bun\" \"${plugin_dir}src/index.ts\"'"
   },
   "enabledPlugins": {
-    "claude-hud@claude-hud": true
+    "claude-hud@claude-hud": true,
+    "superpowers@claude-plugins-official": true,
+    "andrej-karpathy-skills@karpathy-skills": true,
+    "swift-lsp@claude-plugins-official": true,
+    "understand-anything@understand-anything": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
       "source": {
         "source": "github",
         "repo": "jarrodwatts/claude-hud"
+      },
+      "autoUpdate": true
+    },
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "karpathy-skills": {
+      "source": {
+        "source": "github",
+        "repo": "forrestchang/andrej-karpathy-skills"
+      }
+    },
+    "understand-anything": {
+      "source": {
+        "source": "github",
+        "repo": "Lum1104/Understand-Anything"
       }
     }
   },
-  "effortLevel": "medium",
+  "effortLevel": "xhigh",
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark-daltonized",
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
   "defaultMode": "acceptEdits",
   "preferredLanguage": "zh-CN"
 }

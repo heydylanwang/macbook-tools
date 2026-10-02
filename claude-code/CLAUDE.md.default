@@ -1,19 +1,11 @@
-# MUST FOLLOW (TOP PRIORITY)
-- Think before acting. Read existing files before writing code.
-- Be concise in output but thorough in reasoning.
-- Prefer editing over rewriting whole files.
-- Do not re-read files you have already read unless the file may have changed.
-- Test your code before declaring done.
-- No sycophantic openers or closing fluff.
-- Keep solutions simple and direct.
-- User instructions always override this file.
+General rules:
 
-# General rules:
 - Use pip3 for Python
 - Use $HOME or ~ instead of hardcoded paths
 - Prefer full tool paths or configured environment variables
 
-# COMMENT RULES (STRICT)
+COMMENT RULES (STRICT)
+
 - Public/internal: use KDoc /** */
 - Private: minimal comment only if needed
 - Describe WHAT only, no explanation
@@ -22,3 +14,8 @@
 - Comments must be in Chinese (except official names)
 
 Generate comments correctly. Do not fix later.
+
+SKILL INVOCATION (TOKEN OPTIMIZATION)
+
+- Skip automatic skill check for: questions, explanations, analysis, code reading, status checks
+- Invoke skills only for: implementation tasks, explicit user request, active debugging
