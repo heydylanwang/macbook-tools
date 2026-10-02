@@ -10,8 +10,10 @@
 # 身份系统只认 agent-memory, 不再有 planner-memory 软链 (旧迁移产物已彻底移除)。
 #
 # 前提: 已先跑完 install-all.sh (gh + claude + python3 在场)。
+#       本脚本放任意位置均可 (SCRIPT_DIR 自定位, 不依赖固定目录)。
 #       settings 模板用户名无关 (占位符 __HOME__ 回填为当前 $HOME), 任意 mac 用户名可用。
-#       auto-memory 目录名按原机绝对路径编码, 仅当新机用户名与原机一致时才会被自动加载。
+#       auto-memory 按当前用户名自动适配: 原机 dev-nemo 的 projects 目录名与内容路径
+#       会回填为新机实际用户名, 换用户名也能正确注入, 无需手改。
 #
 # 用法:
 #   ./restore-from-github.sh            完整还原 (交互式 gh 登录)
@@ -149,6 +151,23 @@ if [ "$DO_MEMORY" = 1 ]; then
     # 只还原 projects (auto-memory + 会话历史), 不覆盖 settings/commands/hooks
     run "tar -xzf '$MEMORY_TGZ' -C '$HOME/.claude' ./projects 2>/dev/null || true"
     say "已从 $MEMORY_TGZ 还原 auto-memory"
+    # 用户名智能适配: projects 目录名与 memory 内容路径按当前用户回填, 换机换用户名也能注入
+    CUR="$(whoami)"; PROJ="$HOME/.claude/projects"
+    if [ "$DRY" = 1 ]; then
+      printf '  [dry] 若当前用户 != dev-nemo: 重命名 %s/-Users-dev-nemo* 并回填 /Users/<user> 路径\n' "$PROJ"
+    elif [ "$CUR" = "dev-nemo" ]; then
+      say "用户名 dev-nemo 与原机一致, auto-memory 直接可用"
+    elif [ -d "$PROJ" ]; then
+      for d in "$PROJ"/-Users-dev-nemo*; do
+        [ -e "$d" ] || continue
+        nb="$(basename "$d" | sed "s/^-Users-dev-nemo/-Users-$CUR/")"
+        [ "$(basename "$d")" != "$nb" ] && mv "$d" "$PROJ/$nb"
+      done
+      grep -rIl "/Users/dev-nemo/" "$PROJ" 2>/dev/null | while IFS= read -r f; do
+        sed -i '' "s#/Users/dev-nemo/#/Users/$CUR/#g" "$f"
+      done
+      say "auto-memory 已按用户名 '$CUR' 适配 (目录名 + 内容路径回填)"
+    fi
   else
     warn "未找到 dotclaude tgz (外接盘未挂载?), 跳过 auto-memory"
   fi
